@@ -18,14 +18,25 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from core.views import ProjectViewSet
-
+from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
 
 
+
+
+def create_superuser(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "admin@example.com", "securepassword")
+        return HttpResponse("Superuser created successfully!")
+    return HttpResponse("Superuser already exists!")
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('create-superuser/', create_superuser),
 ]
