@@ -80,17 +80,18 @@ WSGI_APPLICATION = 'team_ray.wsgi.application'
 
 import os
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'team_ray_database'),
-        'USER': os.getenv('DB_USER', 'team_ray_database_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', 'dpg-cu5mo0lsvqrc7389tr0g-a'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': os.getenv('DB_NAME'),  # Database name
+        'USER': os.getenv('DB_USER'),  # Database user
+        'PASSWORD': os.getenv('DB_PASSWORD'),  # Database password
+        'HOST': os.getenv('DB_HOST'),  # Database host
+        'PORT': os.getenv('DB_PORT', '5432'),  # Database port (default: 5432)
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
