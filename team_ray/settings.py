@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'team_ray.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+import os
 import dj_database_url
 
 DATABASES = {
