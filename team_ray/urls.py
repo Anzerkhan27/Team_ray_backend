@@ -25,18 +25,20 @@ from django.contrib.auth.models import User
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
 
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+
+def check_superuser(request):
+    if User.objects.filter(is_superuser=True).exists():
+        return HttpResponse("Superuser exists!")
+    return HttpResponse("No superuser found.")
 
 
 
-def create_superuser(request):
-    if not User.objects.filter(username="admin").exists():
-        User.objects.create_superuser("admin", "admin@example.com", "securepassword")
-        return HttpResponse("Superuser created successfully!")
-    return HttpResponse("Superuser already exists!")
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('create-superuser/', create_superuser),
+    path('check-superuser/', check_superuser),
 ]
