@@ -35,6 +35,7 @@ class Contact(models.Model):
 
 
 
+
 class Post(models.Model):
     TITLE_MAX_LENGTH = 200
 
@@ -51,8 +52,15 @@ class Post(models.Model):
     title = models.CharField(max_length=TITLE_MAX_LENGTH)
     content = models.TextField()
     post_type = models.CharField(max_length=20, choices=POST_TYPES, default=NEWS)
-    image = models.ImageField(upload_to='news_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
+
+
+class PostImage(models.Model):
+    post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='news_images/')
+    
+    def __str__(self):
+        return f"Image for {self.post.title}"

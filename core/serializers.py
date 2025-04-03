@@ -1,5 +1,5 @@
-from rest_framework import serializers
-from .models import Project, Member, Contact, Post
+from rest_framework import serializers # type: ignore
+from .models import Project, Member, Contact, Post, PostImage
 
 class ProjectSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
@@ -34,15 +34,14 @@ class ContactSerializer(serializers.ModelSerializer):
 
 
 
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ['image']  # Serialize the 'image' field of PostImage
+
 class PostSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
+    images = PostImageSerializer(many=True, read_only=True)  # Include related images
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'post_type', 'image', 'created_at']
-
-    def get_image(self, obj):
-        request = self.context.get('request')
-        if obj.image:
-            return request.build_absolute_uri(obj.image.url)
-        return None
+        fields = ['id', 'title', 'content', 'post_type', 'created_at', 'images']  # Return images as a list

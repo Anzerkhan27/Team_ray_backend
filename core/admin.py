@@ -1,8 +1,18 @@
-from django.contrib import admin
-
 # Register your models here.
-from django.contrib import admin
-from .models import Project, Member, Contact, Post
+from django.contrib import admin # type: ignore
+from .models import Project, Member, Contact, Post, PostImage
+
+
+class PostImageInline(admin.TabularInline):
+    model = PostImage
+    extra = 1  # Number of empty forms to show initially
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'post_type', 'created_at')  # Fields to display in the admin list view
+    inlines = [PostImageInline]
+
+
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
@@ -11,4 +21,5 @@ class ProjectAdmin(admin.ModelAdmin):
 
 admin.site.register(Member)
 admin.site.register(Contact)
-admin.site.register(Post)
+
+
