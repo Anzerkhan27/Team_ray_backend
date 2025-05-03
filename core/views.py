@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render # type: ignore
 from rest_framework.viewsets import ModelViewSet # type: ignore
-from rest_framework import viewsets
+from rest_framework import viewsets # type: ignore
 from .models import Project, Member, Contact, Post
 from .serializers import ProjectSerializer, MemberSerializer, ContactSerializer, PostSerializer
 

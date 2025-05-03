@@ -32,7 +32,7 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = '__all__'
 
-
+    
 
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,0 +1,46 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+env/
+venv/
+.venv/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# Environment variables
+.env
+.env.*
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
+
+# PyCharm
+.idea/
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Migrations (optional, if you check them in)
+# core/migrations/*.py
+# !core/migrations/__init__.py
+
+# Whitenoise collected files
+whitenoise/
+
+# Your custom files
+*.pid
+
