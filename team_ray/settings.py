@@ -1,18 +1,25 @@
 import os
 from pathlib import Path
 
-# 1. Compute BASE_DIR first
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 2. Load .env from the project root (BASE_DIR)
-from dotenv import load_dotenv
-load_dotenv(dotenv_path=BASE_DIR / '.env')
+# DEBUG from env (default False in production)
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
+# Only load .env locally when DEBUG=True
+if DEBUG:
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(dotenv_path=BASE_DIR / '.env')
+    except ImportError:
+        pass
 
-# SECURITY
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-secret')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+# Secret key and allowed hosts from env (required)
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("Missing SECRET_KEY environment variable")
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -99,13 +106,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript)
+# Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media files
+# Media URL (handled by Cloudinary)
 MEDIA_URL = '/media/'
-# MEDIA_ROOT is not used since Cloudinary handles storage
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = os.getenv(
@@ -129,8 +135,7 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
 
-
-# Tell Django 5 to use Cloudinary for all media storage
+# Django 5 storage settings
 STORAGES = {
     'default': {
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
