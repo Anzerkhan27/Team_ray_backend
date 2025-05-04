@@ -126,6 +126,7 @@ CLOUDINARY_STORAGE = {
     'PREFIX': '',    
     'USE_FILENAME': True,
     'UNIQUE_FILENAME': False,
+    'TAGS': [],
 }
 
 
