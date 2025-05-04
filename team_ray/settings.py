@@ -121,6 +121,11 @@ CSRF_TRUSTED_ORIGINS = os.getenv(
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+import cloudinary
+# Remove the default “media” tag on every upload
+cloudinary.config(tags=None)
+
+
 # Cloudinary storage settings
 CLOUDINARY_STORAGE = {
     'PREFIX': '',    
