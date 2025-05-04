@@ -123,6 +123,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ─── Cloudinary‑storage options (override defaults) ──────────────────────────
 
+
+
 CLOUDINARY_STORAGE = {
     'DEFAULT_UPLOAD_OPTIONS': {
         'use_filename': True,
@@ -131,9 +133,10 @@ CLOUDINARY_STORAGE = {
     },
 }
 
+
 STORAGES = {
     'default': {
-        'BACKEND': 'cloudinary_storage.storage.CloudinaryStorage',  # Generic backend
+        'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',  # NOT "CloudinaryStorage"
     },
     'staticfiles': {
         'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
