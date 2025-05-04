@@ -131,7 +131,7 @@ SECRET_KEY=your-secret
 DATABASE_URL=your-db-url
 DEBUG=False
 CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
-CORS_ALLOWED_ORIGINS=http://localhost:3000,https://team-ray-frontend.pages.dev
+CORS_ALLOWED_ORIGINS=http://localhost:3000,https://teamray.team
 CSRF_TRUSTED_ORIGINS=https://web-production-7860.up.railway.app,https://teamray.team
 ```
 
@@ -140,7 +140,7 @@ CSRF_TRUSTED_ORIGINS=https://web-production-7860.up.railway.app,https://teamray.
 💻 **Local Development**
 
 ```bash
-git clone https://github.com/your-username/team-ray-backend.git
+git clone https://github.com/Anzerkhan27/team-ray-backend.git
 cd team-ray-backend
 
 python -m venv env
