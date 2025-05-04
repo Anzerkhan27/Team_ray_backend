@@ -122,15 +122,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ─── Cloudinary storage (final, minimal, works) ──────────────────────────────
 CLOUDINARY_STORAGE = {
-    # Tell django‑cloudinary‑storage NOT to prefix “media/”
-    # and NOT to add the default “tags=media” parameter.
-    'DEFAULT_UPLOAD_OPTIONS': {
-        'folder': '',          # use your model’s upload_to exactly
+    'OPTIONS': {             # ← must be called OPTIONS
+        'folder': '',        # no “media/” prefix
+        'tags': '',          # no “media” tag
         'use_filename': True,
         'unique_filename': False,
-        'tags': '',            # override the hard‑coded “media” tag
     },
 }
+
 
 STORAGES = {
     'default': {
