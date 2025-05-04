@@ -120,6 +120,17 @@ CSRF_TRUSTED_ORIGINS = os.getenv(
 # ─── Primary Key Field ────────────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# Cloudinary storage settings
+CLOUDINARY_STORAGE = {
+    'MEDIA_FOLDER': '',       # strip the default media/ prefix
+    'USE_FILENAME': True,
+    'UNIQUE_FILENAME': False,
+}
+
+
+
+
 # ─── Cloudinary Storage (reads CLOUDINARY_URL env) ───────────────────────────
 STORAGES = {
     'default': {
