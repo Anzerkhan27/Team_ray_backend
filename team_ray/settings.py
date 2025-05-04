@@ -122,19 +122,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # ─── Cloudinary‑storage options (override defaults) ──────────────────────────
+
 CLOUDINARY_STORAGE = {
-    'PREFIX': '',   # remove the automatic “media/” folder prefix
-    'TAG': '',      # remove the automatic “media” tag
+    'DEFAULT_UPLOAD_OPTIONS': {
+        'use_filename': True,
+        'unique_filename': False,
+        'tags': [],  # Empty list removes default tags
+    },
 }
-
-
 
 STORAGES = {
     'default': {
-        'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+        'BACKEND': 'cloudinary_storage.storage.CloudinaryStorage',  # Generic backend
     },
     'staticfiles': {
         'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
-# ─────────────────────────────────────────────────────────────────────────────
