@@ -120,24 +120,18 @@ CSRF_TRUSTED_ORIGINS = os.getenv(
 # ─── Primary Key Field ────────────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-import cloudinary
-# Remove the default “media” tag on every upload
-cloudinary.config(tags=None)
-
-
-# Cloudinary storage settings
+# ─── Cloudinary storage (final, minimal, works) ──────────────────────────────
 CLOUDINARY_STORAGE = {
-    'PREFIX': '',    
-    'USE_FILENAME': True,
-    'UNIQUE_FILENAME': False,
-    'TAGS': [],
+    # Tell django‑cloudinary‑storage NOT to prefix “media/”
+    # and NOT to add the default “tags=media” parameter.
+    'DEFAULT_UPLOAD_OPTIONS': {
+        'folder': '',          # use your model’s upload_to exactly
+        'use_filename': True,
+        'unique_filename': False,
+        'tags': '',            # override the hard‑coded “media” tag
+    },
 }
 
-
-
-
-# ─── Cloudinary Storage (reads CLOUDINARY_URL env) ───────────────────────────
 STORAGES = {
     'default': {
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
@@ -146,3 +140,4 @@ STORAGES = {
         'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
+# ─────────────────────────────────────────────────────────────────────────────
