@@ -123,6 +123,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Cloudinary storage settings
 CLOUDINARY_STORAGE = {
+    'PREFIX': '',
     'MEDIA_FOLDER': '',       # strip the default media/ prefix
     'USE_FILENAME': True,
     'UNIQUE_FILENAME': False,
