@@ -1,13 +1,11 @@
 import os
 from pathlib import Path
 
-# Base directory
+# ─── Base Directory ───────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# DEBUG from env (default False in production)
+# ─── Debug & .env (dev only) ─────────────────────────────────────────────────
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
-
-# Only load .env locally when DEBUG=True
 if DEBUG:
     try:
         from dotenv import load_dotenv
@@ -15,15 +13,15 @@ if DEBUG:
     except ImportError:
         pass
 
-# Secret key and allowed hosts from env (required)
+# ─── Security ─────────────────────────────────────────────────────────────────
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
-    raise ValueError("Missing SECRET_KEY environment variable")
+    raise ValueError("Missing SECRET_KEY")
+
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
-# Application definition
+# ─── Applications ─────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
-    # Django core
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,13 +29,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Third-party
     'corsheaders',
     'rest_framework',
-    'cloudinary',
-    'cloudinary_storage',
+    'cloudinary',           # uses CLOUDINARY_URL
+    'cloudinary_storage',   # storage backend for media
 
-    # Your apps
     'core',
 ]
 
@@ -54,7 +50,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'team_ray.urls'
+WSGI_APPLICATION = 'team_ray.wsgi.application'
 
+# ─── Templates ───────────────────────────────────────────────────────────────
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -71,11 +69,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'team_ray.wsgi.application'
-
-# Database configuration
-IS_PRODUCTION = 'DATABASE_URL' in os.environ
-if IS_PRODUCTION:
+# ─── Database ────────────────────────────────────────────────────────────────
+if 'DATABASE_URL' in os.environ:
     import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(
@@ -92,7 +87,7 @@ else:
         }
     }
 
-# Password validation
+# ─── Auth & Validation ───────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -100,42 +95,32 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
+# ─── Internationalization ────────────────────────────────────────────────────
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# ─── Static & Media ──────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+MEDIA_URL = '/media/'  # not used for storage, but required for admin preview
 
-# Media URL (handled by Cloudinary)
-MEDIA_URL = '/media/'
-
-# CORS settings
+# ─── CORS & CSRF ─────────────────────────────────────────────────────────────
 CORS_ALLOWED_ORIGINS = os.getenv(
     'CORS_ALLOWED_ORIGINS',
     'http://localhost:3000'
 ).split(',')
 
-# CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = os.getenv(
     'CSRF_TRUSTED_ORIGINS',
-    'https://web-production-7860-up-railway-app/'
+    ''
 ).split(',')
 
-# Default primary key field type
+# ─── Primary Key Field ────────────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Cloudinary configuration
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY':    os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
-}
-
-# Django 5 storage settings
+# ─── Cloudinary Storage (reads CLOUDINARY_URL env) ───────────────────────────
 STORAGES = {
     'default': {
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
