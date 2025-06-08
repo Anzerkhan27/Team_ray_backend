@@ -2,14 +2,29 @@ from django.db import models # type: ignore
 
 
 
+from django.db import models
+
 class Project(models.Model):
+    PROJECT_TYPES = (
+        ('primary', 'Primary'),
+        ('secondary', 'Secondary'),
+        ('other', 'Other'),
+    )
+
     name = models.CharField(max_length=200)
     description = models.TextField()
-    image = models.ImageField(upload_to='project_images/', null=True, blank=True)  # Image fieldpyt
+    image = models.ImageField(upload_to='project_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    project_type = models.CharField(
+        max_length=20,
+        choices=PROJECT_TYPES,
+        default='other',
+        help_text="Classify project as Primary, Secondary, or Other"
+    )
 
     def __str__(self):
         return self.name
+
 
 
 class Member(models.Model):

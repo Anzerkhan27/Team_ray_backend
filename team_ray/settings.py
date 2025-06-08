@@ -1,26 +1,24 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv  # Make sure this is installed via `pip install python-dotenv`
 
 # ─── Base Directory ───────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ─── Debug & .env (dev only) ─────────────────────────────────────────────────
-DEBUG = os.getenv('DEBUG', 'False') == 'False'
-if DEBUG:
-    try:
-        from dotenv import load_dotenv
-        load_dotenv(dotenv_path=BASE_DIR / '.env')
-    except ImportError:
-        pass
+# ─── Load .env early ──────────────────────────────────────────────────────────
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
-# ─── Security ─────────────────────────────────────────────────────────────────
+# ─── Debug Mode ───────────────────────────────────────────────────────────────
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+# ─── Secret Key ───────────────────────────────────────────────────────────────
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
     raise ValueError("Missing SECRET_KEY")
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
-# ─── Applications ─────────────────────────────────────────────────────────────
+# ─── Installed Apps ───────────────────────────────────────────────────────────
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -31,12 +29,13 @@ INSTALLED_APPS = [
 
     'corsheaders',
     'rest_framework',
-    'cloudinary',           # uses CLOUDINARY_URL
-    'cloudinary_storage',   # storage backend for media
+    'cloudinary',
+    'cloudinary_storage',
 
     'core',
 ]
 
+# ─── Middleware ───────────────────────────────────────────────────────────────
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -49,10 +48,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# ─── URL Configuration ────────────────────────────────────────────────────────
 ROOT_URLCONF = 'team_ray.urls'
 WSGI_APPLICATION = 'team_ray.wsgi.application'
 
-# ─── Templates ───────────────────────────────────────────────────────────────
+# ─── Templates ────────────────────────────────────────────────────────────────
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -69,14 +69,14 @@ TEMPLATES = [
     },
 ]
 
-# ─── Database ────────────────────────────────────────────────────────────────
-if 'DATABASE_URL' in os.environ:
+# ─── Database ─────────────────────────────────────────────────────────────────
+if os.getenv('DATABASE_URL'):
     import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(
             default=os.getenv('DATABASE_URL'),
             conn_max_age=600,
-            ssl_require=True
+            ssl_require=not DEBUG  # only require SSL in prod
         )
     }
 else:
@@ -87,7 +87,7 @@ else:
         }
     }
 
-# ─── Auth & Validation ───────────────────────────────────────────────────────
+# ─── Password Validators ──────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -95,49 +95,19 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ─── Internationalization ────────────────────────────────────────────────────
+# ─── Internationalization ─────────────────────────────────────────────────────
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ─── Static & Media ──────────────────────────────────────────────────────────
+# ─── Static & Media ───────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-MEDIA_URL = '/media/'  # not used for storage, but required for admin preview
-
-# ─── CORS & CSRF ─────────────────────────────────────────────────────────────
-CORS_ALLOWED_ORIGINS = os.getenv(
-    'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000'
-).split(',')
-
-CSRF_TRUSTED_ORIGINS = os.getenv(
-    'CSRF_TRUSTED_ORIGINS',
-    ''
-).split(',')
-
-# ─── Primary Key Field ────────────────────────────────────────────────────────
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# ─── Cloudinary‑storage options (override defaults) ──────────────────────────
-
-
-
-CLOUDINARY_STORAGE = {
-    'DEFAULT_UPLOAD_OPTIONS': {
-        'use_filename': True,
-        'unique_filename': False,
-        'tags': [],  # Empty list removes default tags
-    },
-}
-
 
 if DEBUG:
-    MEDIA_ROOT = BASE_DIR / "media"
-    MEDIA_URL = "/media/"
-
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
     STORAGES = {
         'default': {
             'BACKEND': 'django.core.files.storage.FileSystemStorage',
@@ -147,6 +117,7 @@ if DEBUG:
         },
     }
 else:
+    MEDIA_URL = '/media/'  # required for admin preview
     STORAGES = {
         'default': {
             'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
@@ -155,7 +126,6 @@ else:
             'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
         },
     }
-
     CLOUDINARY_STORAGE = {
         'DEFAULT_UPLOAD_OPTIONS': {
             'use_filename': True,
@@ -163,3 +133,10 @@ else:
             'tags': [],
         },
     }
+
+# ─── CORS & CSRF ──────────────────────────────────────────────────────────────
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+
+# ─── Primary Key Field Type ───────────────────────────────────────────────────
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
