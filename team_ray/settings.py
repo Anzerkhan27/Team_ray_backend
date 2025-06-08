@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 # ─── Debug Mode ───────────────────────────────────────────────────────────────
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False') == 'False'
 
 # ─── Secret Key ───────────────────────────────────────────────────────────────
 SECRET_KEY = os.getenv('SECRET_KEY')
