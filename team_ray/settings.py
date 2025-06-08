@@ -5,7 +5,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ─── Debug & .env (dev only) ─────────────────────────────────────────────────
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False') == 'False'
 if DEBUG:
     try:
         from dotenv import load_dotenv
